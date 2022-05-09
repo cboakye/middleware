@@ -255,6 +255,21 @@ class ZFSPoolService(CRUDService):
                 self.clear_label(target.path)
         self.__zfs_vdev_operation(name, label, impl)
 
+    @accepts(Str('pool'))
+    def imported_fast(self, pool):
+        return os.path.exists(f'/proc/spl/kstat/zfs/{pool}')
+
+    @accepts(Str('pool'))
+    def status_fast(self, pool):
+        """
+        Lockless read of zpool state. Raises FileNotFoundError
+        if pool not imported.
+        """
+        with open(f'/proc/spl/kstat/zfs/{pool}/state') as f:
+            status = f.read()
+
+        return status.strip()
+
     @accepts(Str('device'))
     def clear_label(self, device):
         """
