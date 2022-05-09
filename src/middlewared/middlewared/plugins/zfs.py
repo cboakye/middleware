@@ -1,5 +1,6 @@
 import copy
 import errno
+import os
 import subprocess
 from collections import defaultdict
 from copy import deepcopy
